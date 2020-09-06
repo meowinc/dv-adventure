@@ -1,5 +1,6 @@
 <html>
-  <header><title>DV Adventure Riddle Answers</title>
+  <head><title>DV Adventure Riddle Answers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       :root {
         --main-bg-color: #2c2c3e;
@@ -17,7 +18,7 @@
         color: var(--text-color);
       }
       #app {
-        max-width:600px;
+        max-width:800px;
         margin: 0 auto;
       }
       #filter-bar {
@@ -26,7 +27,7 @@
         display:flex;
         position:fixed;
         top:0;
-        max-width:600px;
+        max-width:800px;
         padding: 5px;
         box-sizing: border-box;
         background: var(--main-bg-color);
@@ -36,7 +37,7 @@
         flex-grow:1;
         border-radius:10px;
         margin-right:10px;
-        border: 2px solid var(--text-color);
+        border: 0px;
         padding: 10px;
         font-size: 20px;
       }
@@ -44,10 +45,10 @@
         outline:0;
       }
       #loc {
-        border-radius:10px;
+        
         font-size: 20px;
         border:none;
-        background: white;
+        background: var(--content-bg-color);
         color:var(--text-color);
       }
       #loc option {
@@ -130,12 +131,31 @@
       .hnr .wrong a {
         color: #c9826c;
       }
+
+      @media screen and (max-width: 800px) {
+        #app {
+          max-width: none;
+        }
+        #filter-bar {
+          max-width: none;
+          padding:0;
+          margin:0;
+        }
+        #filter-bar input {
+          margin-right:0;
+          border-radius:0px;
+        }
+        #results {
+          margin-top: 30px;
+          padding:0px;  
+        }
+      }
     </style>
-  </header>
+  </head>
   <body>
     <div id="app">
       <div id="filter-bar">
-        <input v-model="filter" placeholder="Start by searching or selecting a town">
+        <input v-model="filter" placeholder="Search riddle or select town">
         <select v-model="search_location" id="loc">
           <option value="0" disabled>Select town</option>
           <option value="LH">Louise Hill</option>
