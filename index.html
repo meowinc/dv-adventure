@@ -135,14 +135,15 @@
   <body>
     <div id="app">
       <div id="filter-bar">
-        <input v-model="filter" placeholder="Search riddles">
+        <input v-model="filter" placeholder="Start by searching or selecting a town">
         <select v-model="search_location" id="loc">
-          <option value="">All towns</option>
+          <option value="0" disabled>Select town</option>
           <option value="LH">Louise Hill</option>
           <option value="3F">3's Forest</option>
           <option value="SM">Silvie's Mine</option>
           <option value="AV">Aviar Cove</option>
           <option value="VR">Vaer Reef</option>
+          <option value="">All towns</option>
         </select>
       </div>
       <div id="results">
@@ -154,10 +155,10 @@
             :riddle="riddle.Riddle"
             :hint="riddle.Hint"
             :answer="riddle.Answer"
-            :filter="filter.toLowerCase()"
+            :filter="fiterLower"
             :search_location="search_location"
             :form="riddle['Prefilled URL']"
-            :show="true">
+            :show="false">
           </Riddle>
 
           <div class="result"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdNdlDhHnAeoLxxJlYj19fmAIjlCisiooZp4Y3eoNZQgYKkRQ/viewform">
@@ -193,10 +194,16 @@
         },
         methods: {        
           applyFilter: function() {
-            this.show = this.riddle.toLowerCase().indexOf(this.filter) >= 0;
-            if(this.search_location.length) {
-              this.show &= (this.location == this.search_location);
+            let show = true;
+            if(this.search_location.length==1) {
+              show = this.filter.length >= 1;
+            } else if(this.search_location.length==2) {
+              show = (this.location == this.search_location);
             }
+            if (show) {
+              show &= (this.riddle.toLowerCase().indexOf(this.filter) >= 0);
+            }
+            this.show = show
           }
         },
         //
@@ -229,9 +236,14 @@
         el: '#app',
         data: {
           filter: '',
-          search_location: '',
+          search_location: '0',
           riddles: [],
           mark: Object,
+        },
+        computed: {
+          fiterLower: function() {
+            return this.filter.toLowerCase()
+          }
         },
         created: function() {
           let $this = this;
