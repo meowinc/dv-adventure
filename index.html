@@ -1,0 +1,51 @@
+<html>
+  <header><title>DV Adventure Riddle Answers</title></header>
+  <body>
+    <div id="app">
+      <select v-model="location">
+        <option disabled value="">Location</option>
+        <option>Louise Hill</option>
+        <option>3's Forest</option>
+        <option>Silvie's Mine</option>
+        <option>Aviar Cove</option>
+        <option>Vaer Reef</option>
+      </select>
+      <input v-model="filter" placeholder="Search riddles">
+      
+    </div>
+    <!-- <script>var $ = Object()</script> -->
+    <script src="js/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          filter: '',
+          location: '',
+          riddles: [],
+        },
+        created: function() {
+          Papa.parse("values.csv", {
+            download: true,
+            //worker: true,
+            header: true,
+            step: function(row) {
+              console.log("Row:", row.data);
+              //this.riddles.push(row.data)
+            },
+            complete: function() {
+              console.log("All done!");
+              
+              
+            }
+          });
+        },
+      })
+      Vue.component('riddle')
+
+      
+
+      
+    </script>
+  </body>
+</html>
