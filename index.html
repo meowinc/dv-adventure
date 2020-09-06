@@ -43,6 +43,7 @@
       }
       #filter-bar input:focus,#filter-bar select:focus {
         outline:0;
+        border: 1px solid lightblue;
       }
       #loc {
         
@@ -155,7 +156,7 @@
   <body>
     <div id="app">
       <div id="filter-bar">
-        <input v-model="filter" placeholder="Search riddle or select town">
+        <input v-model="filter" ref="filter" placeholder="Search riddle or select town">
         <select v-model="search_location" id="loc">
           <option value="0" disabled>Select town</option>
           <option value="LH">Louise Hill</option>
@@ -228,7 +229,7 @@
         },
         //
         template: `<div v-show="show" class='result' :class="[answer, show ? 'shown': '']">
-          <span class='location' v-show="search_location.length==0">{{location}}</span>
+          <span class='location' v-show="search_location.length<2">{{location}}</span>
           <div class='riddle' v-html="riddle"></div>
           <span class='answer'>
             <img :src="'img/stat_'+answer+'.png'" :class='{has_hint:hint}'/>
@@ -263,6 +264,11 @@
         computed: {
           fiterLower: function() {
             return this.filter.toLowerCase()
+          }
+        },
+        methods: {
+          focusSearch: function() {
+            this.$refs.filter.focus();
           }
         },
         created: function() {
@@ -306,7 +312,12 @@
       })
       Vue.component('riddle')
 
-      
+      window.addEventListener("keydown",function (e) {
+          if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+            app.focusSearch();
+              e.preventDefault();
+          }
+      })
 
       
     </script>
