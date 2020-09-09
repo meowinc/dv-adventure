@@ -230,16 +230,30 @@
           }
         },
         //
-        template: `<div v-show="show" class='result' :class="[answer, show ? 'shown': '']">
-          <span class='location' v-show="search_location.length<2">{{location}}</span>
-          <div class='riddle' v-html="riddle"></div>
-          <span class='answer'>
-            <img :src="'img/stat_'+answer+'.png'" :class='{has_hint:hint}'/>
-            <div v-if="hint" class="hint">{{hint}}</div>
-          </span>
-          <div class="wrong"><a target="_blank" :href="form">nope</a></div>
-          
-          </tr>`,
+        template: `
+          <div
+            v-if="answer=='?'"
+            v-show="show" class='result' :class="[show ? 'shown': '']">
+            <span class='location' v-show="search_location.length<2">{{location}}</span>
+            <div class='riddle' v-html="riddle"></div>
+            <span class='answer'>
+              ({{hint}})
+            </span>
+            <div class="wrong"><a target="_blank" :href="form">Submit answer</a></div>
+          </div>
+          <div
+            v-else
+            v-show="show" class='result' :class="[answer, show ? 'shown': '']">
+            <span class='location' v-show="search_location.length<2">{{location}}</span>
+            <div class='riddle' v-html="riddle"></div>
+            <span class='answer'>
+              <img :src="'img/stat_'+answer+'.png'" :class='{has_hint:hint}'/>
+              <div v-if="hint" class="hint">{{hint}}</div>
+              
+            </span>
+            <div class="wrong"><a target="_blank" :href="form">nope</a></div>
+          </div>
+          `,
       })
 
       let answer_images = {
@@ -280,8 +294,12 @@
             download: true,
             header: true,
             step: function(row) {
-              row.data.Riddle = row.data.Riddle.trim().replace("\n","<br>")
-              row.data.Answer = answer_images[row.data.Answer];
+              row.data.Riddle = row.data.Riddle.trim().replaceAll("\n","<br>")
+              
+              
+              if(row.data.Answer != "?") {
+                row.data.Answer = answer_images[row.data.Answer];
+              }
               row.data.Location = location_map[row.data.Location];
               $this.riddles.push(row.data)
             },
