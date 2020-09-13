@@ -166,11 +166,19 @@
         margin-top: -533px;
         width: 694px
       } 
+      #cover {
+        position:absolute;
+        top:0;
+        left:158px;
+        right:0px;
+        bottom:50px;
+      }
     </style>
   </head>
   <body>
     <div id="app">
       <div id="dv-frame">
+        <div v-on:click="focusSearch" id="cover"></div>
         <iframe scrolling="no" src="https://dappervolk.com/world/adventuring">
         </iframe>
         </div>
