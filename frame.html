@@ -1,0 +1,364 @@
+<html>
+  <head><title>DV Adventure Riddle Answers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+    <style>
+      :root {
+        --main-bg-color: #2c2c3e;
+        --content-bg-color: #e7e7ed;
+        --text-color: #333;
+      }
+
+      body {
+        margin:0;
+        padding:0;
+        width:100%;
+        font-family: Arial, Helvetica, sans-serif	;
+        letter-spacing: .05em;
+        background: var(--main-bg-color);
+        color: var(--text-color);
+      }
+      #app {
+        max-width:800px;
+        margin: 0 auto;
+      }
+      #filter-bar {
+        height:35px;
+        width:100%;
+        display:flex;
+        /* position:fixed; */
+        top:0;
+        max-width:800px;
+        padding: 5px;
+        box-sizing: border-box;
+        background: var(--main-bg-color);
+        z-index: 1;
+      }
+      #filter-bar input {
+        flex-grow:1;
+        border-radius:10px;
+        margin-right:10px;
+        border: 0px;
+        padding: 10px;
+        font-size: 20px;
+      }
+      #filter-bar input:focus,#filter-bar select:focus {
+        outline:0;
+        border: 1px solid lightblue;
+      }
+      #loc {
+        
+        font-size: 20px;
+        border:none;
+        background: var(--content-bg-color);
+        color:var(--text-color);
+      }
+      #loc option {
+        color:black;
+      }
+      #results {
+        padding:15px; 
+        background: var(--content-bg-color)
+      }
+      
+      .result {
+        display:flex;
+        margin: 2px 0;
+        padding: 2px 0;
+        align-items: center;
+        position:relative;
+        min-height: 3em;
+      }
+      .riddle {
+        flex-grow: 1;
+      }
+      .location {
+        width:50px;
+        flex-grow:0;
+        flex-shrink:0;
+        text-align:center;
+      }
+      .tnc {
+        background:#ffd999;
+      }
+      .cmp {
+        background:#73e9e0;
+      }
+      .hnr {
+        background:#ffc0ac;
+      }
+      .crm {
+        background:#bde190;
+      }
+      .answer {
+        position: relative;
+      }
+      .answer img:hover+.hint {
+        display: block;
+      }
+      .hint {
+        display: none;
+        position: absolute;
+        right: 100%;
+        background: white;
+        font-size: .8em;
+        padding: 5px;
+        top: 0;
+        margin-right: 5px;
+        z-index:2;
+      }
+      .has_hint {
+        border-radius: 50%;
+        box-shadow: 0px 0px 5px 2px rgba(255,255,255,.7);
+      }
+      .wrong {
+        position:absolute;
+        bottom:3px;
+        right:3px;
+      }
+      .wrong a {
+        text-decoration: none;
+        font-size: .8em;
+      }
+      .tnc .wrong a{
+        color: #c59f5f;
+      }
+      .cmp .wrong a {
+        color: #31b2a8
+      }
+      .crm .wrong a {
+        color: #87ac59
+      }
+      .hnr .wrong a {
+        color: #c9826c;
+      }
+
+      @media screen and (max-width: 800px) {
+        #app {
+          max-width: none;
+        }
+        #filter-bar {
+          max-width: none;
+          padding:0;
+          margin:0;
+        }
+        #filter-bar input {
+          margin-right:0;
+          border-radius:0px;
+        }
+        #results {
+          margin-top: 30px;
+          padding:0px;  
+        }
+      }
+
+      #dv-frame {
+        border: 3px solid rgb(255 255 255);
+        overflow: hidden;
+        margin: 5px auto;
+        max-width: 635px;
+        z-index: 500;
+        position: relative;
+      }
+      #dv-frame iframe {
+        margin-left: -51px;
+        height: 763px;
+        margin-top: -533px;
+        width: 694px
+      } 
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="dv-frame">
+        <iframe scrolling="no" src="https://dappervolk.com/world/adventuring">
+        </iframe>
+        </div>
+      <div id="filter-bar">
+        <input v-model="filter" ref="filter" placeholder="Search riddle or select town">
+        <select v-model="search_location" id="loc">
+          <option value="0" disabled>Select town</option>
+          <option value="LH">Louise Hill</option>
+          <option value="3F">3's Forest</option>
+          <option value="SM">Silvie's Mine</option>
+          <option value="AV">Aviar Cove</option>
+          <option value="VR">Vaer Reef</option>
+          <option value="">All towns</option>
+        </select>
+      </div>
+      <div id="results">
+        
+          <Riddle 
+            v-for="(riddle, index) in riddles" 
+            :key="index" 
+            :location="riddle.Location"
+            :riddle="riddle.Riddle"
+            :hint="riddle.Hint"
+            :answer="riddle.Answer"
+            :filter="fiterLower"
+            :search_location="search_location"
+            :form="riddle['Prefilled URL']"
+            :show="false">
+          </Riddle>
+
+          <div class="result"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdNdlDhHnAeoLxxJlYj19fmAIjlCisiooZp4Y3eoNZQgYKkRQ/viewform">
+          Can't find the right riddle? Please submit it here!</a></div>
+        
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      Vue.component('Riddle', {
+        props: {
+          index: Number,
+          location: String,
+          riddle: String,
+          answer: String,
+          form: String,
+          hint: String,
+
+          // Dynamic
+          filter: String,
+          search_location: String,
+          show: Boolean,
+        },
+        watch: {
+          filter: function() {
+            this.applyFilter();
+          },
+          search_location: function() {
+            this.applyFilter();
+          }
+        },
+        methods: {        
+          applyFilter: function() {
+            let show = true;
+            if(this.search_location.length==1) {
+              show = this.filter.length >= 1;
+            } else if(this.search_location.length==2) {
+              show = (this.location == this.search_location);
+            }
+            if (show) {
+              show &= (this.riddle.toLowerCase().indexOf(this.filter) >= 0);
+            }
+            this.show = show
+          }
+        },
+        //
+        template: `
+          <div
+            v-if="answer=='?'"
+            v-show="show" class='result' :class="[show ? 'shown': '']">
+            <span class='location' v-show="search_location.length<2">{{location}}</span>
+            <div class='riddle' v-html="riddle"></div>
+            <span class='answer'>
+              ({{hint}})
+            </span>
+            <div class="wrong"><a target="_blank" :href="form">Submit answer</a></div>
+          </div>
+          <div
+            v-else
+            v-show="show" class='result' :class="[answer, show ? 'shown': '']">
+            <span class='location' v-show="search_location.length<2">{{location}}</span>
+            <div class='riddle' v-html="riddle"></div>
+            <span class='answer'>
+              <img :src="'img/stat_'+answer+'.png'" :class='{has_hint:hint}'/>
+              <div v-if="hint" class="hint">{{hint}}</div>
+              
+            </span>
+            <div class="wrong"><a target="_blank" :href="form">nope</a></div>
+          </div>
+          `,
+      })
+
+      let answer_images = {
+        "Yellow / Tenacity": "tnc",
+        "Red / Honor": "hnr",
+        "Green / Charm": "crm",
+        "Blue / Comprehension": "cmp",
+      }
+      let location_map = {
+        "Louise Hill": "LH",
+        "3's Forest": "3F",
+        "Silvie's Mine": "SM",
+        "Aviar Cove": "AV",
+        "Vaer Reef": "VR",
+      }
+      var app = new Vue({
+        el: '#app',
+        data: {
+          filter: '',
+          search_location: '0',
+          riddles: [],
+          mark: Object,
+        },
+        computed: {
+          fiterLower: function() {
+            return this.filter.toLowerCase()
+          }
+        },
+        methods: {
+          focusSearch: function() {
+            this.$refs.filter.focus();
+            this.$refs.filter.select();
+          }
+        },
+        created: function() {
+          let $this = this;
+          Papa.parse("values.csv", {
+            download: true,
+            header: true,
+            step: function(row) {
+              row.data.Riddle = row.data.Riddle.trim().replaceAll("\n","<br>")
+              
+              
+              if(row.data.Answer != "?") {
+                row.data.Answer = answer_images[row.data.Answer];
+              }
+              row.data.Location = location_map[row.data.Location];
+              $this.riddles.push(row.data)
+            },
+            complete: function() {
+            }
+          });
+        },
+        mounted: function () {
+          let $this = this;
+          this.$nextTick(function () {
+            $this.mark = new Mark($this.$el);
+          })
+        },
+      
+        updated: function () {
+          let $this = this;
+          this.$nextTick(function () {
+            $this.mark.unmark({
+              done:function(){
+                if($this.filter.length>3){
+                  var context = document.querySelectorAll(".shown");
+                  var instance = new Mark(context);
+                  instance.mark($this.filter, {
+                    separateWordSearch: false,
+                  })
+                } 
+              }
+            })
+          })
+        },
+      })
+      Vue.component('riddle')
+
+      window.addEventListener("keydown",function (e) {
+          if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+            app.focusSearch();
+              e.preventDefault();
+          }
+      })
+
+      
+    </script>
+  </body>
+</html>
