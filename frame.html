@@ -197,16 +197,12 @@
       <div id="results">
         
           <Riddle 
-            v-for="(riddle, index) in riddles" 
-            :key="index" 
-            :location="riddle.Location"
-            :riddle="riddle.Riddle"
-            :hint="riddle.Hint"
-            :answer="riddle.Answer"
-            :filter="fiterLower"
-            :search_location="search_location"
-            :form="riddle['Prefilled URL']"
-            :show="false">
+          v-for="(riddle, index) in riddles" 
+          :key="index" 
+          :riddle="riddle"
+          :filter="fiterLower"
+          :search_location="search_location"
+          :show="false">
           </Riddle>
 
           <div class="result"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdNdlDhHnAeoLxxJlYj19fmAIjlCisiooZp4Y3eoNZQgYKkRQ/viewform">
@@ -217,155 +213,6 @@
     <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
-    <script>
-      Vue.component('Riddle', {
-        props: {
-          index: Number,
-          location: String,
-          riddle: String,
-          answer: String,
-          form: String,
-          hint: String,
-
-          // Dynamic
-          filter: String,
-          search_location: String,
-          show: Boolean,
-        },
-        watch: {
-          filter: function() {
-            this.applyFilter();
-          },
-          search_location: function() {
-            this.applyFilter();
-          }
-        },
-        methods: {        
-          applyFilter: function() {
-            let show = true;
-            if(this.search_location.length==1) {
-              show = this.filter.length >= 1;
-            } else if(this.search_location.length==2) {
-              show = (this.location == this.search_location);
-            }
-            if (show) {
-              show &= (this.riddle.toLowerCase().indexOf(this.filter) >= 0);
-            }
-            this.show = show
-          }
-        },
-        //
-        template: `
-          <div
-            v-if="answer=='?'"
-            v-show="show" class='result' :class="[show ? 'shown': '']">
-            <span class='location' v-show="search_location.length<2">{{location}}</span>
-            <div class='riddle' v-html="riddle"></div>
-            <span class='answer'>
-              ({{hint}})
-            </span>
-            <div class="wrong"><a target="_blank" :href="form">Submit answer</a></div>
-          </div>
-          <div
-            v-else
-            v-show="show" class='result' :class="[answer, show ? 'shown': '']">
-            <span class='location' v-show="search_location.length<2">{{location}}</span>
-            <div class='riddle' v-html="riddle"></div>
-            <span class='answer'>
-              <img :src="'img/stat_'+answer+'.png'" :class='{has_hint:hint}'/>
-              <div v-if="hint" class="hint">{{hint}}</div>
-              
-            </span>
-            <div class="wrong"><a target="_blank" :href="form">nope</a></div>
-          </div>
-          `,
-      })
-
-      let answer_images = {
-        "Yellow / Tenacity": "tnc",
-        "Red / Honor": "hnr",
-        "Green / Charm": "crm",
-        "Blue / Comprehension": "cmp",
-      }
-      let location_map = {
-        "Louise Hill": "LH",
-        "3's Forest": "3F",
-        "Silvie's Mine": "SM",
-        "Aviar Cove": "AV",
-        "Vaer Reef": "VR",
-      }
-      var app = new Vue({
-        el: '#app',
-        data: {
-          filter: '',
-          search_location: '0',
-          riddles: [],
-          mark: Object,
-        },
-        computed: {
-          fiterLower: function() {
-            return this.filter.toLowerCase()
-          }
-        },
-        methods: {
-          focusSearch: function() {
-            this.$refs.filter.focus();
-            this.$refs.filter.select();
-          }
-        },
-        created: function() {
-          let $this = this;
-          Papa.parse("values.csv", {
-            download: true,
-            header: true,
-            step: function(row) {
-              row.data.Riddle = row.data.Riddle.trim().replaceAll("\n","<br>")
-              
-              
-              if(row.data.Answer != "?") {
-                row.data.Answer = answer_images[row.data.Answer];
-              }
-              row.data.Location = location_map[row.data.Location];
-              $this.riddles.push(row.data)
-            },
-            complete: function() {
-            }
-          });
-        },
-        mounted: function () {
-          let $this = this;
-          this.$nextTick(function () {
-            $this.mark = new Mark($this.$el);
-          })
-        },
-      
-        updated: function () {
-          let $this = this;
-          this.$nextTick(function () {
-            $this.mark.unmark({
-              done:function(){
-                if($this.filter.length>3){
-                  var context = document.querySelectorAll(".shown");
-                  var instance = new Mark(context);
-                  instance.mark($this.filter, {
-                    separateWordSearch: false,
-                  })
-                } 
-              }
-            })
-          })
-        },
-      })
-      Vue.component('riddle')
-
-      window.addEventListener("keydown",function (e) {
-          if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
-            app.focusSearch();
-              e.preventDefault();
-          }
-      })
-
-      
-    </script>
+    <script src="app.js"></script>
   </body>
 </html>
