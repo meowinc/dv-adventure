@@ -184,7 +184,8 @@
         </div>
       <div id="filter-bar">
         <input v-model="filter" ref="filter" placeholder="Search riddle or select town">
-        <select v-model="search_location" id="loc">
+        <select v-model="search_location" id="loc"
+          @change="saveLocation()">
           <option value="0" disabled>Select town</option>
           <option value="LH">Louise Hill</option>
           <option value="3F">3's Forest</option>
@@ -202,7 +203,7 @@
           :riddle="riddle"
           :filter="fiterLower"
           :search_location="search_location"
-          :show="false">
+          :show="riddle.Location == search_location">
           </Riddle>
 
           <div class="result"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdNdlDhHnAeoLxxJlYj19fmAIjlCisiooZp4Y3eoNZQgYKkRQ/viewform">

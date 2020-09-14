@@ -1,3 +1,28 @@
+
+function setCookie(cname, cvalue, exdays) {
+var d = new Date();
+d.setTime(d.getTime() + (exdays*24*60*60*1000));
+var expires = "expires="+ d.toUTCString();
+document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+var name = cname + "=";
+var decodedCookie = decodeURIComponent(document.cookie);
+var ca = decodedCookie.split(';');
+for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+    }
+}
+return "";
+}
+
+let loc = getCookie('last-loc');
+
 Vue.component('Riddle', {
   props: {
     index: Number,
@@ -24,7 +49,7 @@ Vue.component('Riddle', {
       } else if(this.search_location.length==2) {
         show = (this.riddle.Location == this.search_location);
       }
-      if (show) {
+      if (show && this.filter.length>0) {
         
         if(this.filter.length>3) {
           if(this.riddle.Index[this.filter.slice(0, 3)]) {
@@ -84,7 +109,7 @@ var app = new Vue({
   el: '#app',
   data: {
     filter: '',
-    search_location: '0',
+    search_location: loc,
     riddles: [],
     mark: Object,
   },
@@ -97,6 +122,9 @@ var app = new Vue({
     focusSearch: function() {
       this.$refs.filter.focus();
       this.$refs.filter.select();
+    },
+    saveLocation: function() {
+      setCookie('last-loc', this.search_location, 30)
     }
   },
   created: function() {
