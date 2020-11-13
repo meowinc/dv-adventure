@@ -1,0 +1,15 @@
+:root {
+  --main-bg-color: #2c2c3e;
+  --content-bg-color: #e7e7ed;
+  --text-color: #333;
+}
+
+body {
+  margin:0;
+  padding:0;
+  width:100%;
+  font-family: Arial, Helvetica, sans-serif	;
+  letter-spacing: .05em;
+  background: var(--main-bg-color);
+  color: var(--text-color);
+}

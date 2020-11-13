@@ -1,0 +1,148 @@
+<html>
+  <head><title>DV Word Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      body{text-align: center;}
+      #results {
+        display: flex;
+        flex-direction: horizontal;
+        width:100%;
+      }
+      #results>div {
+        flex-grow:1;
+
+        padding: 5px 0;
+
+      }
+      #tnc {
+        background:#ffd999;
+      }
+      #cmp {
+        background:#73e9e0;
+      }
+      #hnr {
+        background:#ffc0ac;
+      }
+      #crm {
+        background:#bde190;
+      }
+      .word {
+        display: inline;
+      }
+      .word:nth-child(2n+1){
+        color:#d30000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="filter-bar">
+        <select v-model="search_location" id="loc"
+          @change="saveLocation()">
+          <option value="0" disabled>Select town</option>
+          <option value="LH">Louise Hill</option>
+          <option value="3F">3's Forest</option>
+          <option value="SM">Silvie's Mine</option>
+          <option value="AV">Aviar Cove</option>
+          <option value="VR">Vaer Reef</option>
+        </select>
+      </div>
+      <div id="results">
+        <div v-for="trait in ['tnc', 'hnr', 'crm', 'cmp']" :id='trait'>
+          <img :src="'img/stat_'+trait+'.png'"><br>
+            <div class ="word"
+            v-for="(w,index) in counts[trait]"
+            :key="index"
+            :style="{'font-size':30/Math.log((Math.max(index,5)+2)/3) + 'px'}">
+              {{w.word}}
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+      let word_counts = {}
+
+      function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+      function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+      }
+      let loc = getCookie('last-loc');
+
+      var app = new Vue({
+        el: '#app',
+        data: {
+          search_location: loc,
+          counts: {
+            tnc: [],
+            hnr: [],
+            cmp: [],
+            crm: [],
+          }
+        },
+        methods: {
+          saveLocation: function() {
+            setCookie('last-loc', this.search_location, 30)
+            this.get_words()
+          },
+          get_words: function(){
+            let words = word_counts[this.search_location]
+            this.counts.tnc.splice(0, this.counts.tnc.length);
+            this.counts.hnr.splice(0, this.counts.hnr.length);
+            this.counts.cmp.splice(0, this.counts.cmp.length);
+            this.counts.crm.splice(0, this.counts.crm.length);
+            if(words) {
+              words.forEach(element => {
+                let max_key = null;
+                let max_percentage = 0;
+                for (const [key, value] of Object.entries(element[1])) {
+                  console.log(`${key}: ${value}`);
+                  if (value > max_percentage) {
+                    max_key = key;
+                    max_percentage = value;
+                  }
+                }
+                this.counts[max_key].push(
+                  {'word': element[0],
+                  'perc':  max_percentage
+                  }
+                  )
+              });
+            }
+          }
+        },
+        created: function() {
+
+        }
+      })
+      $.getJSON('counts.json', function(json){
+        word_counts = json;
+        app.get_words()
+      })
+
+    </script>
+  </body>
+</html>

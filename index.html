@@ -2,23 +2,9 @@
   <head><title>DV Adventure Riddle Answers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
-
+    <link rel="stylesheet" href="style.css">
     <style>
-      :root {
-        --main-bg-color: #2c2c3e;
-        --content-bg-color: #e7e7ed;
-        --text-color: #333;
-      }
 
-      body {
-        margin:0;
-        padding:0;
-        width:100%;
-        font-family: Arial, Helvetica, sans-serif	;
-        letter-spacing: .05em;
-        background: var(--main-bg-color);
-        color: var(--text-color);
-      }
       #app {
         max-width:800px;
         margin: 0 auto;
@@ -48,7 +34,7 @@
         border: 1px solid lightblue;
       }
       #loc {
-        
+
         font-size: 20px;
         border:none;
         background: var(--content-bg-color);
@@ -59,10 +45,10 @@
       }
       #results {
         margin-top: 30px;
-        padding:15px; 
+        padding:15px;
         background: var(--content-bg-color)
       }
-      
+
       .result {
         display:flex;
         margin: 2px 0;
@@ -150,7 +136,7 @@
         }
         #results {
           margin-top: 30px;
-          padding:0px;  
+          padding:0px;
         }
       }
     </style>
@@ -171,10 +157,10 @@
         </select>
       </div>
       <div id="results">
-        
-          <Riddle 
-            v-for="(riddle, index) in riddles" 
-            :key="index" 
+
+          <Riddle
+            v-for="(riddle, index) in riddles"
+            :key="index"
             :riddle="riddle"
             :filter="fiterLower"
             :search_location="search_location"
@@ -183,7 +169,7 @@
 
           <div class="result"><a href="https://docs.google.com/forms/d/e/1FAIpQLSdNdlDhHnAeoLxxJlYj19fmAIjlCisiooZp4Y3eoNZQgYKkRQ/viewform">
           Can't find the right riddle? Please submit it here!</a></div>
-        
+
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
