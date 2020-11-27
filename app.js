@@ -41,7 +41,7 @@ Vue.component('Riddle', {
       this.applyFilter();
     }
   },
-  methods: {        
+  methods: {
     applyFilter: function() {
       let show = true;
       if(this.search_location.length==1) {
@@ -50,7 +50,7 @@ Vue.component('Riddle', {
         show = (this.riddle.Location == this.search_location);
       }
       if (show && this.filter.length>0) {
-        
+
         if(this.filter.length>3) {
           if(this.riddle.Index[this.filter.slice(0, 3)]) {
             show = (this.riddle.Riddle.toLowerCase().indexOf(this.filter) >= 0);
@@ -60,7 +60,7 @@ Vue.component('Riddle', {
         } else {
           show = this.riddle.Index[this.filter];
         }
-        
+
       }
       this.show = show
     }
@@ -85,7 +85,7 @@ Vue.component('Riddle', {
       <span class='answer'>
         <img :src="'img/stat_'+riddle.Answer+'.png'" :class='{has_hint:riddle.Hint}'/>
         <div v-if="riddle.Hint" class="hint">{{riddle.Hint}}</div>
-        
+
       </span>
       <div class="wrong"><a target="_blank" :href="riddle['Prefilled URL']">nope</a></div>
     </div>
@@ -129,7 +129,7 @@ var app = new Vue({
   },
   created: function() {
     let $this = this;
-    Papa.parse("values.csv?v=0003", {
+    Papa.parse("values.csv?v=0004", {
       download: true,
       header: true,
       step: function(row) {
@@ -164,7 +164,7 @@ var app = new Vue({
             instance.mark($this.filter, {
               separateWordSearch: false,
             })
-          } 
+          }
         }
       })
     })
@@ -173,7 +173,7 @@ var app = new Vue({
 Vue.component('riddle')
 
 window.addEventListener("keydown",function (e) {
-    if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) { 
+    if (e.keyCode === 114 || (e.ctrlKey && e.keyCode === 70)) {
       app.focusSearch();
         e.preventDefault();
     }

@@ -10,7 +10,6 @@ def add_chars(st, data, num_chars):
 
 with open('data.csv', newline='') as csvfile:
   r = csv.DictReader(csvfile)
-  header = next(r)
   with open('values.csv', 'w', newline='') as w:
     x = r.fieldnames + ['Index']
     writer = csv.DictWriter(w, x)
@@ -26,7 +25,6 @@ with open('data.csv', newline='') as csvfile:
       add_chars(st, data, 3)
       row['Index'] = json.dumps(data)
       writer.writerow(row)
-    
-    
-      
-    
+
+
+
