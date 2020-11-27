@@ -32,7 +32,7 @@
         display: inline;
       }
       .word:nth-child(2n+1){
-        color:#d30000;
+        color:#7c7c7c;
       }
     </style>
   </head>
@@ -55,7 +55,7 @@
             <div class ="word"
             v-for="(w,index) in counts[trait]"
             :key="index"
-            :style="{'font-size':30/Math.log((Math.max(index,5)+2)/3) + 'px'}">
+            :style="{'font-size':11+(w.size*5)/(2*Math.log(Math.max(index,5))) + 'px'}">
               {{w.word}}
             </div>
         </div>
@@ -127,7 +127,8 @@
                 }
                 this.counts[max_key].push(
                   {'word': element[0],
-                  'perc':  max_percentage
+                  'perc':  max_percentage,
+                  'size': element[2]
                   }
                   )
               });
@@ -138,7 +139,7 @@
 
         }
       })
-      $.getJSON('counts.json', function(json){
+      $.getJSON('counts.json?v=0001', function(json){
         word_counts = json;
         app.get_words()
       })

@@ -53,7 +53,7 @@ Vue.component('Riddle', {
 
         if(this.filter.length>3) {
           if(this.riddle.Index[this.filter.slice(0, 3)]) {
-            show = (this.riddle.Riddle.toLowerCase().indexOf(this.filter) >= 0);
+            show = (this.riddle.Search.indexOf(this.filter) >= 0);
           } else {
             show = false;
           }
@@ -138,6 +138,8 @@ var app = new Vue({
         if(row.data.Answer != "?") {
           row.data.Answer = answer_images[row.data.Answer];
         }
+        row.data.Search = row.data.Riddle.replaceAll(/(<([^>]+)>)/ig,'').toLowerCase();
+
         row.data.Index = JSON.parse(row.data.Index);
         row.data.Location = location_map[row.data.Location];
         $this.riddles.push(row.data)

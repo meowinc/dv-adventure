@@ -13,3 +13,7 @@ body {
   background: var(--main-bg-color);
   color: var(--text-color);
 }
+
+spe {
+  text-decoration: underline 1.5px dotted;
+}
