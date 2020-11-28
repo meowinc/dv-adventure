@@ -138,7 +138,8 @@ var app = new Vue({
         if(row.data.Answer != "?") {
           row.data.Answer = answer_images[row.data.Answer];
         }
-        row.data.Search = row.data.Riddle.replaceAll(/(<([^>]+)>)/ig,'').toLowerCase();
+        row.data.Search = row.data.Riddle.replace(/(<([^>]+)>)/ig,'').toLowerCase();
+        console.log(row.data.Search)
 
         row.data.Index = JSON.parse(row.data.Index);
         row.data.Location = location_map[row.data.Location];
