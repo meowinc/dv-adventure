@@ -129,7 +129,7 @@ var app = new Vue({
   },
   created: function() {
     let $this = this;
-    Papa.parse("values.csv?v=0004", {
+    Papa.parse("values.csv?v=0005", {
       download: true,
       header: true,
       step: function(row) {
